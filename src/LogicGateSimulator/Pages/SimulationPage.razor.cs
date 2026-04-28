@@ -5,17 +5,17 @@ using Microsoft.AspNetCore.Components;
 
 namespace LogicGateSimulator.Pages;
 
-public sealed record HomeDataModel
+public sealed record SimulationPageDataModel
 {
     public Simulations Simulations = new();
     public Simulation Simulation = new();
 }
 
-public partial class Home
+public partial class SimulationPage
 {
     [Inject] public required IPersistorService Persistor { get; set; }
 
-    private readonly HomeDataModel _homeData = new();
+    private readonly SimulationPageDataModel _simulationPageData = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -26,6 +26,6 @@ public partial class Home
             return;
         }
 
-        await InitializeSimulation.RunAsync(Persistor, _homeData);
+        await InitializeSimulation.RunAsync(Persistor, _simulationPageData);
     }
 }
