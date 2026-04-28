@@ -41,21 +41,21 @@ internal static class GeneratePartialClassSourceCode
         sourceCode.AppendLine($"namespace {classModel.NamespaceString};");
         sourceCode.AppendLine();
         sourceCode.AppendLine($"partial class {classModel.Name} : IBinarySerializable<{classModel.Name}>");
-        sourceCode.AppendLine("{");
-        sourceCode.AppendLine("    public MemoryStream Serialize()");
-        sourceCode.AppendLine("    {");
-        sourceCode.AppendLine("        MemoryStream memoryStream = new();");
-        sourceCode.AppendLine("        using BinaryWriter binaryWriter = new(memoryStream, Encoding.UTF8, true);");
+        sourceCode.AppendLine($"{{");
+        sourceCode.AppendLine($"    public{(classModel.IsInherited ? " new" : string.Empty)} MemoryStream Serialize()");
+        sourceCode.AppendLine($"    {{");
+        sourceCode.AppendLine($"        MemoryStream memoryStream = new();");
+        sourceCode.AppendLine($"        using BinaryWriter binaryWriter = new(memoryStream, Encoding.UTF8, true);");
         GenerateSerializePropertiesSourceCode(sourceCode, classModel);
-        sourceCode.AppendLine("        return memoryStream;");
-        sourceCode.AppendLine("    }");
+        sourceCode.AppendLine($"        return memoryStream;");
+        sourceCode.AppendLine($"    }}");
         sourceCode.AppendLine();
-        sourceCode.AppendLine("    public void Deserialize(MemoryStream memoryStream)");
-        sourceCode.AppendLine("    {");
-        sourceCode.AppendLine("        using BinaryReader binaryReader = new(memoryStream, Encoding.UTF8, true);");
+        sourceCode.AppendLine($"    public{(classModel.IsInherited ? " new" : string.Empty)} void Deserialize(MemoryStream memoryStream)");
+        sourceCode.AppendLine($"    {{");
+        sourceCode.AppendLine($"        using BinaryReader binaryReader = new(memoryStream, Encoding.UTF8, true);");
         GenerateDeserializePropertiesSourceCode(sourceCode, classModel);
-        sourceCode.AppendLine("    }");
-        sourceCode.AppendLine("}");
+        sourceCode.AppendLine($"    }}");
+        sourceCode.AppendLine($"}}");
         return sourceCode.ToString();
     }
 

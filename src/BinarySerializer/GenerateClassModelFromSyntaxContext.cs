@@ -23,7 +23,7 @@ internal static class GenerateClassModelFromSyntaxContext
             return null;
         }
 
-        List<IPropertySymbol> properties = [.. GetSerializableProperties.Run(symbol)];
-        return new ClassModel(symbol.ContainingNamespace.ToDisplayString(), symbol.Name, properties);
+        (List<IPropertySymbol> properties, bool isInherited) = GetSerializableProperties.Run(symbol);
+        return new ClassModel(symbol.ContainingNamespace.ToDisplayString(), symbol.Name, isInherited, properties);
     }
 }
