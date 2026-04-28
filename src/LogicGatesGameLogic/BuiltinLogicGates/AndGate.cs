@@ -1,10 +1,10 @@
 ﻿using LogicGatesGameLogic.DataStructures;
 
-namespace LogicGatesGameLogic.BuildInLogicGates;
+namespace LogicGatesGameLogic.BuiltinLogicGates;
 
-public class XorGate : LogicGate
+public class AndGate : LogicGate
 {
-    public XorGate()
+    public AndGate()
     {
         _inputAPin = new LogicPin(ID);
         InputAPinID = _inputAPin.ID;
@@ -16,6 +16,6 @@ public class XorGate : LogicGate
 
     public override void Evaluate(Simulation simulation)
     {
-        _outputPin!.SetState(_inputAPin!.OutputState ^ _inputBPin!.OutputState, simulation);
+        _outputPin!.SetState(_inputAPin!.OutputState & _inputBPin!.OutputState, simulation);
     }
 }

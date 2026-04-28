@@ -1,6 +1,6 @@
 ﻿using LogicGatesGameLogic.DataStructures;
 
-namespace LogicGatesGameLogic.BuildInLogicGates;
+namespace LogicGatesGameLogic.BuiltinLogicGates;
 
 public class OrGate : LogicGate
 {
