@@ -2,4 +2,5 @@
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
   </Folder>
+  <Project Path="BinarySerializer/BinarySerializer.csproj" />
 </Solution>
