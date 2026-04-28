@@ -12,40 +12,46 @@ public partial class LogicComponent
     public int Y { get; set; } = 0;
 
 
-
-    public List<LogicPin> InputPins { get { _inputs ??= [.. InputPinIDs.Select(id => Simulation.Instance.LogicPins[id])]; return _inputs; } }
-    public List<LogicPin> OutputPins { get { _outputs ??= [.. OutputPinIDs.Select(id => Simulation.Instance.LogicPins[id])]; return _outputs; } }
-
-
-
     private List<LogicPin>? _inputs = null;
     private List<LogicPin>? _outputs = null;
 
-    public virtual void Evaluate() { }
+    public virtual void Evaluate(Simulation simulation) { }
 
-    public LogicPin AddInput()
+    public List<LogicPin> GetInputPins(Simulation simulation)
+    {
+        _inputs ??= [.. InputPinIDs.Select(id => simulation.LogicPins[id])];
+        return _inputs;
+    }
+
+    public List<LogicPin> GetOutputPins(Simulation simulation)
+    {
+        _outputs ??= [.. OutputPinIDs.Select(id => simulation.LogicPins[id])];
+        return _outputs;
+    }
+
+    public LogicPin AddInput(Simulation simulation)
     {
         LogicPin logicPin = new(ID);
         InputPinIDs.Add(logicPin.ID);
-        InputPins.Add(logicPin);
+        GetInputPins(simulation).Add(logicPin);
         return logicPin;
     }
 
-    public LogicPin AddOutput()
+    public LogicPin AddOutput(Simulation simulation)
     {
         LogicPin logicPin = new(ID);
         OutputPinIDs.Add(logicPin.ID);
-        OutputPins.Add(logicPin);
+        GetOutputPins(simulation).Add(logicPin);
         return logicPin;
     }
 
-    public void RemovePin(LogicPin pin)
+    public void RemovePin(LogicPin pin, Simulation simulation)
     {
-        InputPins.Remove(pin);
+        GetInputPins(simulation).Remove(pin);
         InputPinIDs.Remove(pin.ID);
-        OutputPins.Remove(pin);
+        GetOutputPins(simulation).Remove(pin);
         OutputPinIDs.Remove(pin.ID);
-        Simulation.Instance.LogicPins.Remove(pin.ID);
-        Simulation.Instance.DirtyLogicPins.Remove(pin);
+        simulation.LogicPins.Remove(pin.ID);
+        simulation.DirtyLogicPins.Remove(pin);
     }
 }

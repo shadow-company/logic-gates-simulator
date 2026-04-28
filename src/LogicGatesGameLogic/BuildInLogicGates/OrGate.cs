@@ -14,8 +14,8 @@ public class OrGate : LogicGate
         OutputPinID = _outputPin.ID;
     }
 
-    public override void Evaluate()
+    public override void Evaluate(Simulation simulation)
     {
-        _outputPin!.SetState(_inputAPin!.OutputState | _inputBPin!.OutputState);
+        _outputPin!.SetState(_inputAPin!.OutputState | _inputBPin!.OutputState, simulation);
     }
 }

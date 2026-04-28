@@ -20,13 +20,6 @@ public partial class LogicPin
     public int OffsetY { get; set; } = 0;
 
 
-
-    public LogicComponent Parent { get { _parent ??= Simulation.Instance.LogicComponents[ParentComponentID]; return _parent; } }
-    public LogicPin IncomingConnection { get { _incomingConnection ??= Simulation.Instance.LogicPins[IncomingConnectionPinID]; return _incomingConnection; } }
-    public List<LogicPin> OutgoingConnections { get { _outgoingConnections ??= [.. OutgoingConnectionIDs.Select(id => Simulation.Instance.LogicPins[id])]; return _outgoingConnections; } }
-
-
-
     private LogicComponent? _parent = null;
     private LogicPin? _incomingConnection = null;
     private List<LogicPin>? _outgoingConnections = null;
@@ -36,7 +29,25 @@ public partial class LogicPin
         ParentComponentID = parentComponentID;
     }
 
-    public void Evaluate()
+    public LogicComponent GetParent(Simulation simulation)
+    {
+        _parent ??= simulation.LogicComponents[ParentComponentID];
+        return _parent;
+    }
+
+    public LogicPin GetIncomingConnection(Simulation simulation)
+    {
+        _incomingConnection ??= simulation.LogicPins[IncomingConnectionPinID];
+        return _incomingConnection;
+    }
+
+    public List<LogicPin> GetOutgoingConnections(Simulation simulation)
+    {
+        _outgoingConnections ??= [.. OutgoingConnectionIDs.Select(id => simulation.LogicPins[id])];
+        return _outgoingConnections;
+    }
+
+    public void Evaluate(Simulation simulation)
     {
         bool output = State ^ IsInverted;
 
@@ -46,10 +57,10 @@ public partial class LogicPin
         }
 
         OutputState = output;
-        Propagate();
+        Propagate(simulation);
     }
 
-    public void SetState(bool state)
+    public void SetState(bool state, Simulation simulation)
     {
         if (State == state)
         {
@@ -57,19 +68,19 @@ public partial class LogicPin
         }
 
         State = state;
-        Simulation.Instance.DirtyLogicPins.Add(this);
+        simulation.DirtyLogicPins.Add(this);
     }
 
-    private void Propagate()
+    private void Propagate(Simulation simulation)
     {
         foreach (Guid outgoingConnectionID in OutgoingConnectionIDs)
         {
-            Simulation.Instance.LogicPins[outgoingConnectionID].SetState(OutputState);
+            simulation.LogicPins[outgoingConnectionID].SetState(OutputState, simulation);
         }
 
         if (PinMode is PinModes.Input)
         {
-            Simulation.Instance.DirtyLogicComponents.Add(Parent);
+            simulation.DirtyLogicComponents.Add(GetParent(simulation));
         }
     }
 }

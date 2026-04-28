@@ -6,12 +6,11 @@ namespace LogicGatesGameLogic;
 [BinarySerializable]
 public partial class Simulation
 {
+    public Guid ID { get; set; } = Guid.NewGuid();
     public string Name { get; set; } = string.Empty;
     public List<Guid> LogicPinsIDs { get; set; } = [];
     public List<Guid> LogicComponentIDs { get; set; } = [];
     public List<Guid> LogicGateIDs { get; set; } = [];
-
-    public static Simulation Instance = new();
 
     public Dictionary<Guid, LogicPin> LogicPins = [];
     public Dictionary<Guid, LogicComponent> LogicComponents = [];
@@ -53,7 +52,7 @@ public partial class Simulation
                     return false;
                 }
 
-                logicPin.Evaluate();
+                logicPin.Evaluate(this);
             }
 
             foreach (LogicComponent logicComponent in logicComponents)
@@ -63,7 +62,7 @@ public partial class Simulation
                     return false;
                 }
 
-                logicComponent.Evaluate();
+                logicComponent.Evaluate(this);
             }
 
             foreach (LogicGate logicGate in logicGates)
@@ -73,7 +72,7 @@ public partial class Simulation
                     return false;
                 }
 
-                logicGate.Evaluate();
+                logicGate.Evaluate(this);
             }
 
             if (updateUI)

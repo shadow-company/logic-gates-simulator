@@ -1,14 +1,21 @@
 ﻿using LogicGatesGameLogic;
+using LogicGateSimulator.GameLogic.Management;
 using LogicGateSimulator.Interfaces;
 using Microsoft.AspNetCore.Components;
 
 namespace LogicGateSimulator.Pages;
 
+public sealed record HomeDataModel
+{
+    public Simulations Simulations = new();
+    public Simulation Simulation = new();
+}
+
 public partial class Home
 {
     [Inject] public required IPersistorService Persistor { get; set; }
 
-    private Simulations _simulations = new();
+    private readonly HomeDataModel _homeData = new();
 
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -19,22 +26,6 @@ public partial class Home
             return;
         }
 
-        await InitializeDatabaseAsync();
-    }
-
-    private async Task InitializeDatabaseAsync()
-    {
-        try
-        {
-            Simulations? simulations = await Persistor.ReadAsync<Simulations>(Guid.Empty);
-            if (simulations is not null)
-            {
-                _simulations = simulations;
-                return;
-            }
-        }
-        catch { }
-
-        await Persistor.UpsertAsync(Guid.Empty, _simulations);
+        await InitializeSimulation.RunAsync(Persistor, _homeData);
     }
 }

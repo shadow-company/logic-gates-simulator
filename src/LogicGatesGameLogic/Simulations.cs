@@ -5,5 +5,12 @@ namespace LogicGatesGameLogic;
 [BinarySerializable]
 public partial class Simulations
 {
-    public List<Guid> PageIDs { get; set; } = [];
+    public Guid CurrentSimulationID { get; set; }
+    public List<Guid> SimulationIDs { get; set; }
+
+    public Simulations()
+    {
+        CurrentSimulationID = Guid.NewGuid();
+        SimulationIDs = [CurrentSimulationID];
+    }
 }

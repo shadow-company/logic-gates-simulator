@@ -28,7 +28,7 @@ public class IndexedDbPersistor : IPersistorService
 
         T result = new();
         await using Stream stream = await jsStreamReference.OpenReadStreamAsync();
-        using MemoryStream memoryStream = new MemoryStream();
+        using MemoryStream memoryStream = new();
         await stream.CopyToAsync(memoryStream);
         memoryStream.Position = 0;
         result.Deserialize(memoryStream);
