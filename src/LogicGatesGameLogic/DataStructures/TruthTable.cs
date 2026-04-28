@@ -1,11 +1,14 @@
-﻿namespace LogicGatesGameLogic.DataStructures;
+﻿using BinarySerializer;
 
-public class TruthTable
+namespace LogicGatesGameLogic.DataStructures;
+
+[BinarySerializable]
+public partial class TruthTable
 {
+    public uint[] Table { get; set; }
+    public bool[] Output { get; set; }
+
     public int Length => Table.Length;
-    
-    public readonly uint[] Table;
-    public readonly bool[] Output;
 
     public TruthTable(int inputCount, int outputCount)
     {

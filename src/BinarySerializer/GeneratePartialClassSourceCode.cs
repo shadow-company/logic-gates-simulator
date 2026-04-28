@@ -64,6 +64,7 @@ internal static class GeneratePartialClassSourceCode
         foreach (IPropertySymbol propertySymbol in recordModel.Properties)
         {
             INamedTypeSymbol? namedTypeSymbol = propertySymbol.Type as INamedTypeSymbol;
+            IArrayTypeSymbol? arrayTypeSymbol = propertySymbol.Type as IArrayTypeSymbol;
             SpecialType specialType = propertySymbol.Type.SpecialType;
             TypeKind typeKind = propertySymbol.Type.TypeKind;
             string propertyName = propertySymbol.Name;
@@ -98,6 +99,14 @@ internal static class GeneratePartialClassSourceCode
                     sourceCode.AppendLine($"        {SerializeEnum(propertyName)}");
                     break;
 
+                case SpecialType.None when typeKind is TypeKind.Array && arrayTypeSymbol is { ElementType: not null }:
+                    sourceCode.AppendLine($"        binaryWriter.Write({propertyName}.Length);");
+                    sourceCode.AppendLine($"        for (int i = 0; i < {propertyName}.Length; i++)");
+                    sourceCode.AppendLine($"        {{");
+                    sourceCode.AppendLine($"            {Serialize($"{propertyName}[i]", arrayTypeSymbol.ElementType)}");
+                    sourceCode.AppendLine($"        }}");
+                    break;
+
                 case SpecialType.None when namedTypeSymbol?.Name is "Guid":
                     sourceCode.AppendLine($"        {SerializeGuid(propertyName)}");
                     break;
@@ -117,6 +126,7 @@ internal static class GeneratePartialClassSourceCode
         {
             case SpecialType.System_String:
             case SpecialType.System_Int32:
+            case SpecialType.System_UInt32:
             case SpecialType.System_Boolean:
                 return SerializeDefault(propertyName);
 
@@ -151,6 +161,7 @@ internal static class GeneratePartialClassSourceCode
         foreach (IPropertySymbol propertySymbol in recordModel.Properties)
         {
             INamedTypeSymbol? namedTypeSymbol = propertySymbol.Type as INamedTypeSymbol;
+            IArrayTypeSymbol? arrayTypeSymbol = propertySymbol.Type as IArrayTypeSymbol;
             SpecialType specialType = propertySymbol.Type.SpecialType;
             TypeKind typeKind = propertySymbol.Type.TypeKind;
             string propertyName = propertySymbol.Name;
@@ -195,6 +206,15 @@ internal static class GeneratePartialClassSourceCode
                     sourceCode.AppendLine($"        {DeserializeEnum(propertyName, propertyType)}");
                     break;
 
+                case SpecialType.None when typeKind is TypeKind.Array && arrayTypeSymbol is { ElementType: not null }:
+                    sourceCode.AppendLine($"        int {propertyName.ToLower()}Length = binaryReader.ReadInt32();");
+                    sourceCode.AppendLine($"        {propertyName} = new[{propertyName.ToLower()}Length];");
+                    sourceCode.AppendLine($"        for (int i = 0; i < {propertyName.ToLower()}Length; i++)");
+                    sourceCode.AppendLine($"        {{");
+                    sourceCode.AppendLine($"            {Deserialize($"{propertyName}[i]", arrayTypeSymbol.ElementType)};");
+                    sourceCode.AppendLine($"        }}");
+                    break;
+
                 case SpecialType.None when namedTypeSymbol?.Name is "Guid":
                     sourceCode.AppendLine($"        {DeserializeGuid(propertyName)}");
                     break;
@@ -215,6 +235,9 @@ internal static class GeneratePartialClassSourceCode
 
             case SpecialType.System_Int32:
                 return DeserializeInt(propertyName);
+
+            case SpecialType.System_UInt32:
+                return DeserializeUInt(propertyName);
 
             case SpecialType.System_Boolean:
                 return DeserializeBoolean(propertyName);
@@ -238,6 +261,11 @@ internal static class GeneratePartialClassSourceCode
     private static string DeserializeInt(string propertyName)
     {
         return $"{propertyName} = binaryReader.ReadInt32();";
+    }
+
+    private static string DeserializeUInt(string propertyName)
+    {
+        return $"{propertyName} = binaryReader.ReadUInt32();";
     }
 
     private static string DeserializeBoolean(string propertyName)
