@@ -208,7 +208,7 @@ internal static class GeneratePartialClassSourceCode
 
                 case SpecialType.None when typeKind is TypeKind.Array && arrayTypeSymbol is { ElementType: not null }:
                     sourceCode.AppendLine($"        int {propertyName.ToLower()}Length = binaryReader.ReadInt32();");
-                    sourceCode.AppendLine($"        {propertyName} = new[{propertyName.ToLower()}Length];");
+                    sourceCode.AppendLine($"        {propertyName} = new {arrayTypeSymbol.ElementType.Name}[{propertyName.ToLower()}Length];");
                     sourceCode.AppendLine($"        for (int i = 0; i < {propertyName.ToLower()}Length; i++)");
                     sourceCode.AppendLine($"        {{");
                     sourceCode.AppendLine($"            {Deserialize($"{propertyName}[i]", arrayTypeSymbol.ElementType)};");
