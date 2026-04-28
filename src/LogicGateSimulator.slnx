@@ -4,4 +4,5 @@
   </Folder>
   <Project Path="BinarySerializer/BinarySerializer.csproj" />
   <Project Path="LogicGatesGameLogic/LogicGatesGameLogic.csproj" />
+  <Project Path="LogicGateSimulator/LogicGateSimulator.csproj" />
 </Solution>

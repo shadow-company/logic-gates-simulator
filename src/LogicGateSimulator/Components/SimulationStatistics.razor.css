@@ -1,0 +1,17 @@
+﻿div#simulation-statistics {
+    position: fixed;
+    top: 32px;
+    right: 32px;
+    width: 320px;
+    height: 160px;
+    border-radius: 16px;
+    border: 2px solid #ffffff0f;
+    background-color: #0000007f;
+    box-shadow: 4px 4px 16px #0000007f;
+    transition: all 100ms ease;
+
+    &:hover {
+        box-shadow: 4px 4px 24px #000000bf;
+        border-color: #ffffff17;
+    }
+}

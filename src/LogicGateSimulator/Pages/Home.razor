@@ -1,0 +1,14 @@
+﻿@page "/"
+@using LogicGateSimulator.Components
+@using LogicGateSimulator.Components.LogicComponents
+@using LogicGatesGameLogic.Enums
+
+<SimulationStatistics />
+
+<div id="screen">
+    <div id="board">
+        <AndGate InputASignalMode="SignalModes.Normal" InputBSignalMode="SignalModes.Normal" OutputSignalMode="SignalModes.Normal" X="32" Y="0" />
+        <OrGate InputASignalMode="SignalModes.Normal" InputBSignalMode="SignalModes.Normal" OutputSignalMode="SignalModes.Normal" X="32" Y="64" />
+        <XorGate InputASignalMode="SignalModes.Normal" InputBSignalMode="SignalModes.Normal" OutputSignalMode="SignalModes.Normal" X="128" Y="32" />
+    </div>
+</div>

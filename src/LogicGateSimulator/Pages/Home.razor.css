@@ -1,0 +1,11 @@
+﻿div#screen {
+    position: fixed;
+    inset: 0;
+    overflow: hidden;
+
+    div#board {
+        position: relative;
+        width: 8192px;
+        height: 8192px;
+    }
+}
