@@ -183,7 +183,7 @@ internal static class GeneratePartialClassSourceCode
 
                 case SpecialType.None when namedTypeSymbol?.Name is "List" && namedTypeSymbol.TypeArguments.Length == 1:
                     sourceCode.AppendLine($"        int {propertyName.ToLower()}Count = binaryReader.ReadInt32();");
-                    sourceCode.AppendLine($"        {propertyName} = [];");
+                    sourceCode.AppendLine($"        {propertyName} = new List<{namedTypeSymbol.TypeArguments[0].Name}>({propertyName.ToLower()}Count);");
                     sourceCode.AppendLine($"        for (int i = 0; i < {propertyName.ToLower()}Count; i++)");
                     sourceCode.AppendLine($"        {{");
                     sourceCode.AppendLine($"            {namedTypeSymbol.TypeArguments[0].Name} {Deserialize("value", namedTypeSymbol.TypeArguments[0])}");
@@ -193,7 +193,7 @@ internal static class GeneratePartialClassSourceCode
 
                 case SpecialType.None when namedTypeSymbol?.Name is "Dictionary" && namedTypeSymbol.TypeArguments.Length == 2:
                     sourceCode.AppendLine($"        int {propertyName.ToLower()}Count = binaryReader.ReadInt32();");
-                    sourceCode.AppendLine($"        {propertyName} = [];");
+                    sourceCode.AppendLine($"        {propertyName} = new Dictionary<{namedTypeSymbol.TypeArguments[0].Name}, {namedTypeSymbol.TypeArguments[1].Name}>({propertyName.ToLower()}Count);");
                     sourceCode.AppendLine($"        for (int i = 0; i < {propertyName.ToLower()}Count; i++)");
                     sourceCode.AppendLine($"        {{");
                     sourceCode.AppendLine($"            {namedTypeSymbol.TypeArguments[0].Name} {Deserialize("key", namedTypeSymbol.TypeArguments[0])}");
